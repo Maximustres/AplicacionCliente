@@ -30,8 +30,8 @@ function loadDataTable() {
             "url": "/Cliente/ObtenerTodos"
         },
         "columns": [
-            { "data": "nombres", "width": "20%" },
-            { "data": "apellidos", "width": "20%" },
+            { "data": "nombres", "width": "15%" },
+            { "data": "apellidos", "width": "15%" },
             { "data": "direccion", "width": "30%" },
             { "data": "telefono", "width": "10%" },
             {
@@ -46,15 +46,38 @@ function loadDataTable() {
             },
             {
                 "data": "id",
-                "width": "10%",
-                "render": function (data) {
+                "width": "20%",
+                "render": (data) => {
                     return `
-                        <div>
-                            <a href="/Cliente/Crear/${data}" class="btn btn-success text-white" style="cursor:pointer;">Editar</a>
+                        <div class="form-button">
+                            <a href="/Cliente/Crear/${data}" class="btn btn-success text-white" style="cursor:pointer;">📄</a>
+                            <a onclick=Delete("/Cliente/Delete/${data}") class="btn btn-danger text-white" style="cursor:pointer;">❌</a>
                         </div>
                         `;
                 }
             }
         ]
     });
+}
+
+function Delete(url) {
+    swal({
+        title: "Esta seguro de Eliminar este Cliente?",
+        text: "Este registro no se podrá recuperar.",
+        icon: "warning",
+        buttons: ["Cancelar", "Eliminar"]
+    }).then((borrar) => {
+        if (borrar) {
+            $.ajax({
+                type: "DELETE",
+                url: url,
+                success: (data) => {
+                    if (data.success) {
+                        datatable.ajax.reload();
+                    }
+                    alert(data.message);
+                }
+            });
+        }
+    })
 }

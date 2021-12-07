@@ -60,5 +60,18 @@ namespace AplicacionCliente.Controllers
             return Json(new { data = todos });
 		}
 
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+		{
+            var clienteDb = await _db.Cliente.FindAsync(id);
+            if (clienteDb == null)
+            {
+                return Json(new { succes = false, message = "Error al borrar" });
+			}
+            _db.Cliente.Remove(clienteDb);
+            await _db.SaveChangesAsync();
+            return Json(new { succes = true, message = "Cliente borrado exitosamente" });
+        }
+
     }
 }
